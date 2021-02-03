@@ -178,3 +178,112 @@ pub fn find_seam_at(matrix: &Vec<Vec<f32>>, start_y: usize) -> Vec<(usize,usize)
     path
 }
 
+/// Creates 3x3 submatrix with 8 neightbours of element with position (x,y):
+pub fn submatrix(matrix: &Vec<Vec<f32>>, x: usize, y: usize) -> Vec<Vec<f32>> {
+    let mut submatrix: Vec<Vec<f32>> = vec![vec![0.0f32;3];3];
+    let mut x1 = 0;
+    let mut y1 = 0;
+    for i in x-1..x+2 {
+        y1 = 0;
+        for j in y-1..y+2 {
+            submatrix[x1][y1] = matrix[i][j];
+            y1 = y1 + 1;
+        }
+        x1 = x1 + 1;
+    }
+    submatrix
+}
+
+pub fn convolution(matrix: &Vec<Vec<f32>>, filter: &mut Vec<Vec<f32>>) -> f32 {
+    filter[0].reverse();
+    filter[1].reverse();
+    filter[2].reverse();
+    filter.reverse();
+    //filter.into_iter().map(|arr| arr.reverse()).collect();
+    //filter.reverse();
+
+    let result = vec![
+         vec![round_f32(matrix[2][2]*filter[0][0]), round_f32(matrix[2][1]*filter[0][1]), round_f32(matrix[2][0]*filter[0][2])] ,
+         vec![round_f32(matrix[1][2]*filter[1][0]), round_f32(matrix[1][1]*filter[1][1]), round_f32(matrix[1][0]*filter[1][2])] ,
+         vec![round_f32(matrix[0][2]*filter[2][0]), round_f32(matrix[0][1]*filter[2][1]), round_f32(matrix[0][0]*filter[2][2])] 
+    ];
+    let mut sum = 0.0;
+    for arr in result {
+        for elem in arr {
+            sum = round_f32(sum + elem);
+        }
+    }
+    sum
+}
+
+/// Calculates the new value for each pixel:
+pub fn sobel_value(matrix: &Vec<Vec<f32>>, x: usize, y: usize) -> f32 {
+    let mut gx = vec![
+        vec![1.0f32, 0.0, -1.0],
+        vec![2.0, 0.0, -2.0],
+        vec![1.0, 0.0, -1.0]
+        ];
+    let mut gy = vec![
+        vec![1.0f32, 2.0, 1.0],
+        vec![0.0, 0.0, 0.0],
+        vec![-1.0, -2.0, -1.0]
+        ];
+    let matrixA = submatrix(&matrix, x ,y);
+    let gXA = convolution(&matrixA, &mut gx);
+    let gYA = convolution(&matrixA, &mut gy);
+
+    let sobelVal = round_f32((gXA.powi(2) + gYA.powi(2)).sqrt());
+    sobelVal
+}
+
+pub fn sobel(submatrix: &Vec<Vec<f32>>, x: usize, y: usize) -> f32 {
+    round_rgb_light(sobel_value(&submatrix, x, y))
+}
+
+pub fn sobel_edge_detect(img: &image::DynamicImage) -> DynamicImage { // TO BE OPTIMIZED
+    let img = img.grayscale();
+    let matrix = rgb_to_f32_matrix(&img);
+    let rows = matrix.len();
+    let cols = matrix[0].len();
+    let mut new_matrix: Vec<Vec<f32>> = vec![vec![0f32;cols]; rows];
+    for i in 1..(rows-1) {
+        for j in 1..(cols-1) {
+            new_matrix[i][j] = sobel(&matrix, i,j);
+        }
+    }
+    f32_to_rgb_matrix(&new_matrix)
+}
+
+pub fn seam_energy(matrix: &Vec<Vec<f32>>, seam: &Vec<(usize,usize)>) -> f32 {
+    let mut sum = 0.0;
+    for elem in seam {
+        sum = sum + matrix[elem.0][elem.1];
+    }
+    round_f32(sum)
+}
+
+pub fn list_of_seams(matrix: &Vec<Vec<f32>>) -> Vec<(Vec<(usize,usize)>, f32)> { // TO BE OPTIMIZED
+    let mut seams: Vec<Vec<(usize,usize)>> = Vec::new();
+    let mut buffer: Vec<(Vec<(usize,usize)>, f32)> = Vec::new();
+    let cols = matrix[0].len();
+    for i in 2.. cols-2 { // for energy_map in 2..cols-2, otherwise 0..cols
+        let seam = find_seam_at(matrix, i);
+        let energy = seam_energy(matrix, &seam);
+        seams.push(seam.clone());
+        buffer.push((seam, energy)); 
+    }
+    buffer
+}
+
+pub fn find_min_seam(buffer: &mut Vec<(Vec<(usize,usize)>, f32)>) -> Vec<(usize,usize)> {
+    let (mut min_seam,mut energy) = buffer[0].clone();
+    let mut index=0;
+    for i in 1..buffer.len() {
+        if energy >= buffer[i].1 {
+            min_seam = buffer[i].0.clone();
+            energy = buffer[i].1.clone();
+            index = i;
+        }
+    }
+    buffer.remove(index).0
+}
