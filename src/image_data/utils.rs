@@ -287,3 +287,4 @@ pub fn find_min_seam(buffer: &mut Vec<(Vec<(usize,usize)>, f32)>) -> Vec<(usize,
     }
     buffer.remove(index).0
 }
+
