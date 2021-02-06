@@ -5,6 +5,7 @@ mod image_data;
 use image::*;
 
 fn main() {
-    let mut img = image_data::ImageData::new(String::from("data/sample2.png")).unwrap();
-    img.seam_carving(100);
+    let mut img = image_data::ImageData::new(String::from("data/sample1.jpg")).unwrap();
+    img.sobel_edge_detect();
+    img.seam_carving(66);
 }

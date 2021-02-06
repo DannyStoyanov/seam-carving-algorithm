@@ -36,7 +36,7 @@ impl ImageData {
         let val_matrix = utils::rgb_to_f32_matrix(&edges);
         self.image = img;
         self.light_matrix =  utils::rgb_to_f32_matrix(&edges);
-        //self.seams = utils::list_of_seams(&val_matrix);
+        self.seams = utils::list_of_seams(&val_matrix); // remove update seams
         self.edge_detect_img = edges;
     }
     
@@ -46,7 +46,7 @@ impl ImageData {
     }
 
     fn remove_seam(&mut self) -> () {
-        self.seams = utils::list_of_seams(&self.light_matrix);
+        /// self.seams = utils::list_of_seams(&self.light_matrix); // remove update seams
         let seam = utils::find_min_seam(&mut self.seams);
     
         let (imgx, imgy) = self.image.dimensions();

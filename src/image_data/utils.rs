@@ -275,6 +275,19 @@ pub fn list_of_seams(matrix: &Vec<Vec<f32>>) -> Vec<(Vec<(usize,usize)>, f32)> {
     buffer
 }
 
+pub fn update_seam(buffer: &mut Vec<(Vec<(usize,usize)>, f32)>, index: usize) -> Vec<(usize,usize)> {
+    for i in index+1..buffer.len() {
+        let mut seam: Vec<(usize,usize)> = buffer[i].0.clone();
+        println!("{:?} ", i);
+        for j in 0..buffer[i].0.len() {
+            let (x,y) = seam[j];
+            seam[j] = (x, y-1);
+        }
+        buffer[i] = (seam, buffer[i].1);
+    }
+    buffer.remove(index).0
+}
+
 pub fn find_min_seam(buffer: &mut Vec<(Vec<(usize,usize)>, f32)>) -> Vec<(usize,usize)> {
     let (mut min_seam,mut energy) = buffer[0].clone();
     let mut index=0;
@@ -285,6 +298,6 @@ pub fn find_min_seam(buffer: &mut Vec<(Vec<(usize,usize)>, f32)>) -> Vec<(usize,
             index = i;
         }
     }
-    buffer.remove(index).0
+    buffer.remove(index).0  //  update_seam(buffer, index)
 }
 
