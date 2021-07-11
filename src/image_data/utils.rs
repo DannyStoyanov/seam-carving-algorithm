@@ -2,6 +2,7 @@ extern crate image;
 
 use image::*;
 
+// Printing function used in testing
 pub fn print_matrix(matrix: &Vec<Vec<f32>>) {
     for i in 0.. matrix.len() {
         println!("");
@@ -11,6 +12,7 @@ pub fn print_matrix(matrix: &Vec<Vec<f32>>) {
     }
 }
 
+// Finds the bigger number between the two
 pub fn max_f32(a: f32, b: f32) -> f32 {
     let eps = 0.0001; // aproximation
     if (a-b) >= eps {
@@ -21,6 +23,7 @@ pub fn max_f32(a: f32, b: f32) -> f32 {
     }
 }
 
+// Finds the smaller number between the two
 pub fn min_f32(a: f32, b: f32) -> f32 { 
     let eps = 0.0001; // aproximation
     if (a-b) <= eps {
@@ -31,14 +34,17 @@ pub fn min_f32(a: f32, b: f32) -> f32 {
     }
 }
 
+// Compares three values and returns the maximum
 pub fn min_of_three(a: f32, b:f32, c:f32) -> f32{
     min_f32(min_f32(a, b), c)
 }
 
+// Rounding f32 values to one decimal space
 pub fn round_f32(numb: f32) -> f32 {
     (numb * 10.0).round() / 10.0
 }
 
+// Rounding f32 values if the value is out of bounds
 pub fn round_rgb_light(val: f32) -> f32 {
     if val < 0.0 {
         0.0
@@ -51,6 +57,7 @@ pub fn round_rgb_light(val: f32) -> f32 {
     }
 }
 
+// Converting RGB pixel to f32 value
 pub fn rgb_to_f32_pixel(pixel: &image::Rgba<u8>) -> f32{ // CHECK IF NOT WORKING
     let image::Rgba(data) = *pixel;
     let r: f32 = data[0] as f32 / 255.0;
@@ -62,7 +69,7 @@ pub fn rgb_to_f32_pixel(pixel: &image::Rgba<u8>) -> f32{ // CHECK IF NOT WORKING
     round_f32(h)
 }
 
-/// Converting RGB image to light image with f32 values:
+// Converting RGB image to light image with f32 values
 pub fn rgb_to_f32_matrix(img: &image::DynamicImage) -> Vec<Vec<f32>> {
     let (imgx, imgy) = img.dimensions();
     let imgx = imgx as usize;
@@ -78,7 +85,7 @@ pub fn rgb_to_f32_matrix(img: &image::DynamicImage) -> Vec<Vec<f32>> {
     matrix
 }
 
-/// Converting light image with f32 values to RGB image:
+// Converting light image with f32 values to RGB image
 pub fn f32_to_rgb_matrix(matrix: &Vec<Vec<f32>>) -> image::DynamicImage {
     let imgy = matrix.len() as u32;
     let imgx = matrix[0].len() as u32;
@@ -95,7 +102,7 @@ pub fn f32_to_rgb_matrix(matrix: &Vec<Vec<f32>>) -> image::DynamicImage {
     DynamicImage::ImageRgb8(new_img)
 }
 
-/// Converting light image with f32 values to RGB image:
+// Converting light image with f32 values to RGB image
 pub fn u8_to_rgb_matrix(matrix: &Vec<Vec<u8>>) -> image::DynamicImage {
     let imgy = matrix.len() as u32;
     let imgx = matrix[0].len() as u32;
@@ -112,7 +119,7 @@ pub fn u8_to_rgb_matrix(matrix: &Vec<Vec<u8>>) -> image::DynamicImage {
     DynamicImage::ImageRgb8(new_img)
 }
 
-/// Finds the minimum pixel value of the three pixels below:
+// Finds the minimum pixel value of the three pixels below
 pub fn under_min(matrix: &Vec<Vec<f32>>, row: usize, col:usize) -> (usize, usize, f32) {
     let m = matrix[0].len();
     if col == 0 {
@@ -144,7 +151,7 @@ pub fn under_min(matrix: &Vec<Vec<f32>>, row: usize, col:usize) -> (usize, usize
     }
 }
 
-/// Creates energy map:
+// Generates energy map
 pub fn energy_grid(matrix: &Vec<Vec<f32>>) -> Vec<Vec<f32>>{
     let rows = matrix.len();
     let cols = matrix[0].len();
@@ -161,7 +168,7 @@ pub fn energy_grid(matrix: &Vec<Vec<f32>>) -> Vec<Vec<f32>>{
     grid
 } 
 
-/// Finds minimum energy seam from a fixed starting position:
+// Finds minimum energy seam from a fixed starting position
 pub fn find_seam_at(matrix: &Vec<Vec<f32>>, start_y: usize) -> Vec<(usize,usize)> {
     let rows = matrix.len();
     let mut path: Vec<(usize,usize)> = Vec::new();
@@ -178,7 +185,7 @@ pub fn find_seam_at(matrix: &Vec<Vec<f32>>, start_y: usize) -> Vec<(usize,usize)
     path
 }
 
-/// Creates 3x3 submatrix with 8 neightbours of element with position (x,y):
+// Creates 3x3 submatrix with 8 neighbours of element with position (x,y)
 pub fn submatrix(matrix: &Vec<Vec<f32>>, x: usize, y: usize) -> Vec<Vec<f32>> {
     let mut submatrix: Vec<Vec<f32>> = vec![vec![0.0f32;3];3];
     let mut x1 = 0;
@@ -199,8 +206,6 @@ pub fn convolution(matrix: &Vec<Vec<f32>>, filter: &mut Vec<Vec<f32>>) -> f32 {
     filter[1].reverse();
     filter[2].reverse();
     filter.reverse();
-    //filter.into_iter().map(|arr| arr.reverse()).collect();
-    //filter.reverse();
 
     let result = vec![
          vec![round_f32(matrix[2][2]*filter[0][0]), round_f32(matrix[2][1]*filter[0][1]), round_f32(matrix[2][0]*filter[0][2])] ,
@@ -216,7 +221,7 @@ pub fn convolution(matrix: &Vec<Vec<f32>>, filter: &mut Vec<Vec<f32>>) -> f32 {
     sum
 }
 
-/// Calculates the new value for each pixel:
+// Calculates the new value for each pixel
 pub fn sobel_value(matrix: &Vec<Vec<f32>>, x: usize, y: usize) -> f32 {
     let mut gx = vec![
         vec![1.0f32, 0.0, -1.0],
@@ -236,10 +241,12 @@ pub fn sobel_value(matrix: &Vec<Vec<f32>>, x: usize, y: usize) -> f32 {
     sobelVal
 }
 
+// Converts pixels into correct edge values
 pub fn sobel(submatrix: &Vec<Vec<f32>>, x: usize, y: usize) -> f32 {
     round_rgb_light(sobel_value(&submatrix, x, y))
 }
 
+// Generates matrix of correct edge values
 pub fn sobel_edge_detect(img: &image::DynamicImage) -> DynamicImage { // TO BE OPTIMIZED
     let img = img.grayscale();
     let matrix = rgb_to_f32_matrix(&img);
@@ -254,6 +261,7 @@ pub fn sobel_edge_detect(img: &image::DynamicImage) -> DynamicImage { // TO BE O
     f32_to_rgb_matrix(&new_matrix)
 }
 
+// Calculates the energy of seam
 pub fn seam_energy(matrix: &Vec<Vec<f32>>, seam: &Vec<(usize,usize)>) -> f32 {
     let mut sum = 0.0;
     for elem in seam {
@@ -262,6 +270,7 @@ pub fn seam_energy(matrix: &Vec<Vec<f32>>, seam: &Vec<(usize,usize)>) -> f32 {
     round_f32(sum)
 }
 
+// Generates vector of seams
 pub fn list_of_seams(matrix: &Vec<Vec<f32>>) -> Vec<(Vec<(usize,usize)>, f32)> { // TO BE OPTIMIZED
     let mut seams: Vec<Vec<(usize,usize)>> = Vec::new();
     let mut buffer: Vec<(Vec<(usize,usize)>, f32)> = Vec::new();
@@ -288,6 +297,7 @@ pub fn update_seam(buffer: &mut Vec<(Vec<(usize,usize)>, f32)>, index: usize) ->
     buffer.remove(index).0
 }
 
+// Finds the minimum seam
 pub fn find_min_seam(buffer: &mut Vec<(Vec<(usize,usize)>, f32)>) -> Vec<(usize,usize)> {
     let (mut min_seam,mut energy) = buffer[0].clone();
     let mut index=0;
@@ -300,4 +310,3 @@ pub fn find_min_seam(buffer: &mut Vec<(Vec<(usize,usize)>, f32)>) -> Vec<(usize,
     }
     buffer.remove(index).0  //  update_seam(buffer, index)
 }
-
