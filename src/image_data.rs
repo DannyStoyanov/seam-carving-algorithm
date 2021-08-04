@@ -7,7 +7,7 @@ use image::*;
 
 pub struct ImageData {
     pub path: String,
-    rgb_image: image::DynamicImage,
+    pub rgb_image: image::DynamicImage,
     f32_image: Vec<Vec<f32>>,
     rgb_edge_detect: image::DynamicImage,
     f32_edge_detect: Vec<Vec<f32>>,

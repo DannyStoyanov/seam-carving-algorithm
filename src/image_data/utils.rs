@@ -26,7 +26,7 @@ pub fn max_f32(a: f32, b: f32) -> f32 {
 // Finds the smaller number between the two
 pub fn min_f32(a: f32, b: f32) -> f32 { 
     let eps = 0.0001; // aproximation
-    if (a-b) <= eps {
+    if (a-b) < eps {
         a
     } 
     else {
