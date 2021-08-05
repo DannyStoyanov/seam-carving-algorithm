@@ -3,6 +3,7 @@ pub mod image_data;
 use std::cmp;
 use image_data::*;
 use image::*;
+use image::error::*;
 // use std::io::Error;
 // use std::fmt::Debug;
 // use std::fmt;
@@ -87,5 +88,16 @@ mod tests {
                           vec![6.0_f32, 1.0_f32, 8.0_f32]];
         assert_eq!(utils::submatrix(&matrix, 0, 0), result); 
         assert_eq!(utils::submatrix(&matrix, matrix.len(), matrix[0].len()), result);
+    }
+
+    #[test] 
+    #[should_panic]
+    fn test_image_data_new() {
+        let img1 = image_data::ImageData::new(String::from("invalid_path/image.png")).unwrap();
+        let img2 = image_data::ImageData::new(String::from("data/test_img_2.png"));
+        match img2 {
+            Ok(img) => (),
+            Err(E) => (),
+        }    
     }
 }

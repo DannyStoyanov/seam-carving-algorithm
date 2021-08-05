@@ -1,9 +1,10 @@
 extern crate image;
 extern crate rand;
 
-pub mod utils; 
+pub mod utils;
 
 use image::*;
+use image::error::*;
 
 pub struct ImageData {
     pub path: String,
@@ -19,6 +20,10 @@ impl ImageData {
     pub fn new(s: String) -> Result<ImageData, ImageError> {
         match open(s.clone()) {
             Ok(img) => {
+                let (width, height) = img.dimensions();
+                if width <= 3 {
+                    return Err(ImageError::Limits(LimitError::from_kind(LimitErrorKind::DimensionError)));
+                }
                 let f32_matrix = utils::rgb_to_f32_matrix(&img);
                 let rgb_edge_matrix = utils::sobel_edge_detect(&img);
                 let f32_edge_matrix = utils::rgb_to_f32_matrix(&rgb_edge_matrix);
