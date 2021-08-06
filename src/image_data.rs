@@ -4,11 +4,8 @@ extern crate rand;
 pub mod utils;
 
 use image::*;
-<<<<<<< HEAD
 use image::error::*;
-=======
 use std::io::{Error, ErrorKind};
->>>>>>> gui
 
 pub struct ImageData {
     pub path: String,

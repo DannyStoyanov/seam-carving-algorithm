@@ -72,13 +72,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         std::thread::sleep(std::time::Duration::from_millis(16));
     }
 
-<<<<<<< HEAD
-fn main() {
-    let mut img = image_data::ImageData::new(String::from("data/sample2.png")).unwrap();
-    img.seam_carving(1);
-}
-=======
     app.run()?;
     Ok(())
 }
->>>>>>> gui
