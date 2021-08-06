@@ -1,6 +1,5 @@
 
-# Seam-carving algorithm
-
+# seam-carving
 
 ## Introduction
 
