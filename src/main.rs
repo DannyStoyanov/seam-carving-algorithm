@@ -19,7 +19,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut input = input::Input::new(450, 75, 100, 40, "Pixels to reduce:");
 
     // Setting frames:
-    let mut image = SharedImage::load(Path::new("D:\\Documents\\University\\3rd_course\\Rust\\fltk\\workspace\\data\\sample2.png"))?;
+    let mut image = SharedImage::load(Path::new("D:\\Documents\\University\\3rd_course\\Rust\\fltk\\workspace\\data\\sample1.jpg"))?;
     image.scale(400, 275, true, true);
     originalFrame.set_image(Some(image.clone()));
     originalFrame.set_label("Original image");
@@ -45,7 +45,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         match r.recv() {
             Some(msg) => {
                 if msg {
-                    let mut img = image_data::ImageData::new(String::from("data/sample2.png")).unwrap();
+                    let mut img = image_data::ImageData::new(String::from("data/sample1.jpg")).unwrap();
                     resultFrame.set_image(None::<SharedImage>);
                     win.set_label("Processing, please wait!");
                     match img.seam_carving(seamsNumber.parse::<u32>().unwrap()) {
