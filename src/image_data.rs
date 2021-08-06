@@ -4,7 +4,11 @@ extern crate rand;
 pub mod utils;
 
 use image::*;
+<<<<<<< HEAD
 use image::error::*;
+=======
+use std::io::{Error, ErrorKind};
+>>>>>>> gui
 
 pub struct ImageData {
     pub path: String,
@@ -111,11 +115,15 @@ impl ImageData {
         self.update_data(DynamicImage::ImageRgba8(new_img));
     }
     
-    pub fn seam_carving(&mut self, val: u32) { // VALIDATE INPUT
+    pub fn seam_carving(&mut self, val: u32) -> Result<bool, ErrorKind> { // VALIDATE INPUT
+        if (val < 1) || (val > self.rgb_image.width()) {
+            return Err(ErrorKind::InvalidInput);
+        }
         for _i in 0..val {
             self.remove_seam();
         }
         self.save_energy_image();
         self.save_color_image();
+        Ok(true)
     }
 }
