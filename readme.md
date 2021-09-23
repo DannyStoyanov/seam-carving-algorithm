@@ -35,7 +35,7 @@ The input image is on the left and the output image is on the right.\
 Acknowledgements to:
 - https://github.com/AndrewRadev
 - https://github.com/andrewdcampbell/seam-carving
-- https://www.youtube.com/user/Raigikijin
+- https://github.com/MoAlyousef
 
 For more information you can check out these links:
 - https://en.wikipedia.org/wiki/Seam_carving
