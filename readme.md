@@ -26,9 +26,19 @@ The program is run via the command-line. You have to be in the project's directo
 ## Example Results
 
 The input image is on the left and the output image is on the right.\
-![Input image 1](/data/example_1.png) ![Output image 1](/data/seam_carving_example_1.png)\
-![Input image 2](/data/example_2.jpg) ![Output image 2](/data/seam_carving_example_2.png)
+![Input image 1](/data/example_1.png) ![Output image 1](/data/seam_carving_example_1.png)
 
+![Input image 2](/data/example_2.jpg) ![Output image 2](/data/seam_carving_example_2.png)
+<br/> 
+
+GUI input screenshot:
+![GUI example input](/data/before.png)
+
+ <br/>
+
+GUI output screenshot:
+![GUI example output](/data/after.png)
+<br/>
 
 ## Acknowledgements and Links
 
